@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Insurance Payer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Dental Payer Dashboard</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="btn btn-light me-2" href="{% url 'manual_mapping' %}">🛠 Manual Payer Mapping</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-light" href="{% url 'upload_payer_file' %}">📤 Upload Payer File</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Summary -->
+    <div class="row">
+        <!-- Payer Groups -->
+        <div class="col-md-4">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Payer Groups</h5>
+                    <p class="display-6 fw-bold">{{ payer_groups_count }}</p>
+                    <a href="{% url 'manage_payer_groups' %}" class="btn btn-primary">Manage Groups</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payers -->
+        <div class="col-md-4">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Payers</h5>
+                    <p class="display-6 fw-bold">{{ payers_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payer Hierarchy Management -->
+        <div class="col-md-4">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Payer Hierarchy</h5>
+                    <a href="{% url 'payer_hierarchy' %}" class="btn btn-warning">View Hierarchy</a>
+                    <a href="{% url 'payer_hierarchy' %}" class="btn btn-warning">Manage Hierarchy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payer List -->
+    <div class="mt-5">
+        <h2 class="text-primary">Payer List</h2>
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Payer Name</th>
+                    <th>Pretty Name</th>
+                    <th>Group</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payer in payers %}
+                <tr>
+                    <td>{{ payer.name }}</td>
+                    <td>{{ payer.pretty_name }}</td>
+                    <td>{{ payer.group.name }}</td>
+                    <td>
+                        <a href="{% url 'edit_payer' payer.id %}" class="btn btn-sm btn-success">✏️ Edit</a>
+                        <a href="{% url 'delete_payer' payer.id %}" class="btn btn-sm btn-danger">🗑 Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No payers available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

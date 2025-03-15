@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Payer Groups</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+
+    <!-- Page Title -->
+    <h1 class="text-dark">Manage Payer Groups</h1>
+
+    <!-- Add New Payer Group -->
+    <form method="post" class="bg-light p-4 border rounded shadow-sm mt-3">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="name" class="form-label">New Payer Group Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter group name" required>
+        </div>
+        <button type="submit" class="btn btn-primary">➕ Add Payer Group</button>
+    </form>
+
+    <!-- Payer Groups List -->
+    <h2 class="mt-4">Existing Payer Groups</h2>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Group Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in payer_groups %}
+            <tr>
+                <td>{{ group.name }}</td>
+                <td>
+                    <a href="{% url 'edit_payer_group' group.id %}" class="btn btn-sm btn-success">✏️ Edit</a>
+                    <a href="{% url 'delete_payer_group' group.id %}" class="btn btn-sm btn-danger">🗑 Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" class="text-center">No payer groups available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Back to Dashboard -->
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary mt-3">↩ Back to Dashboard</a>
+
+</body>
+</html>

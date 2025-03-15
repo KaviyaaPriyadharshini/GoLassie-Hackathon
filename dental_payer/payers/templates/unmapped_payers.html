@@ -1,0 +1,10 @@
+<!-- unmapped_payers.html -->
+<h1>Unmapped Payers</h1>
+
+<ul class="list-group">
+    {% for payer in unmapped_payers %}
+    <li class="list-group-item">{{ payer.name }}</li>
+    {% empty %}
+    <li class="list-group-item text-muted">No unmapped payers</li>
+    {% endfor %}
+</ul>
