@@ -36,7 +36,7 @@ This section lists the available API endpoints for managing payers.
   - **PUT** `/api/payers/{id}/`
 - **Delete Payer**
   - **DELETE** `/api/payers/{id}/`
-  - 
+  
 ### Payer Detail Endpoints
 - **List Payer Details**
   - **GET** `/api/payer_details/`
