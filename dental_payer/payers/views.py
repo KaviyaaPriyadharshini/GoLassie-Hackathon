@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from .models import Payer, PayerDetail, PayerGroup
 from .serializers import PayerSerializer, PayerDetailSerializer
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import PayerDetailForm, UploadFileForm,UnmapPayerForm
+from .forms import UploadFileForm
 from django.contrib import messages
 from .utils import process_uploaded_file
 
@@ -16,7 +16,6 @@ class PayerDetailViewSet(viewsets.ModelViewSet):
 
 
 def manage_payer_groups(request):
-    """ View to display and add new payer groups """
     if request.method == "POST":
         name = request.POST.get("name").strip()
         if name:
@@ -29,7 +28,6 @@ def manage_payer_groups(request):
 
 
 def edit_payer_group(request, group_id):
-    """ View to edit a payer group name """
     payer_group = get_object_or_404(PayerGroup, id=group_id)
 
     if request.method == "POST":
@@ -44,7 +42,6 @@ def edit_payer_group(request, group_id):
 
 
 def delete_payer_group(request, group_id):
-    """ View to delete a payer group """
     payer_group = get_object_or_404(PayerGroup, id=group_id)
     
     if request.method == "POST":
@@ -67,17 +64,21 @@ def dashboard(request):
     return render(request, 'index.html', context)
 
 def manual_mapping(request):
-    if request.method == "POST":
-        form = PayerDetailForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('manual_mapping')
-    else:
-        form = PayerDetailForm()
+    unmapped_payers = Payer.objects.filter(is_mapped=False)
+    mapped_payers = Payer.objects.filter(is_mapped=True)
 
-    return render(request, 'manual_mapping.html', {'form': form})
+    if request.method == 'POST':
+        for payer in unmapped_payers:
+            mapping_id = request.POST.get(f'mapping_{payer.id}')
+            if mapping_id:
+                mapped_payer = Payer.objects.get(id=mapping_id)
+                payer.is_mapped = True
+                payer.mapped_payer = mapped_payer  
+                payer.save()
+        messages.success(request, 'Payer mappings updated successfully')
+        return redirect('manual_mapping')
 
-
+    return render(request, 'manual_mapping.html', {'unmapped_payers': unmapped_payers, 'mapped_payers': mapped_payers})
 def upload_payer_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -126,15 +127,14 @@ def delete_payer(request, payer_id):
     return render(request, "confirm_delete_payer.html", {"payer": payer})
 def unmap_payer(request):
     if request.method == 'POST':
-        payer_ids = request.POST.getlist('payer_ids')
+        payer_ids = request.POST.getlist('payer_ids')  
         for payer_id in payer_ids:
             payer = Payer.objects.get(id=payer_id)
-            payer.is_mapped = False
+            payer.is_mapped = False 
             payer.save()
-        messages.success(request, 'Payers unmapped successfully')
+        messages.success(request, 'Payers unmapped successfully.')
         return redirect('payer_hierarchy')
-    return render(request, 'unmap_payer.html')
-
-def unmapped_payers(request):
-    unmapped_payers = Payer.objects.filter(is_mapped=False)
-    return render(request, 'unmapped_payers.html', {'unmapped_payers': unmapped_payers})
+    
+    mapped_payers = Payer.objects.filter(is_mapped=True)
+    
+    return render(request, 'unmap_payer.html', {'mapped_payers': mapped_payers})

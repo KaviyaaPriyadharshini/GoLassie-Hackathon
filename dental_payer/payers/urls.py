@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PayerViewSet, PayerDetailViewSet, manual_mapping,upload_payer_file, manage_payer_groups,edit_payer_group,delete_payer_group, payer_hierarchy, edit_payer,delete_payer, unmap_payer,unmapped_payers
+from .views import PayerViewSet, PayerDetailViewSet, manual_mapping,upload_payer_file, manage_payer_groups,edit_payer_group,delete_payer_group, payer_hierarchy, edit_payer,delete_payer, unmap_payer
 
 router = DefaultRouter()
 router.register(r'payers', PayerViewSet)
@@ -16,6 +16,5 @@ urlpatterns = [
     path("payer_hierarchy/", payer_hierarchy, name="payer_hierarchy"),
     path("edit_payer/<int:payer_id>/", edit_payer, name="edit_payer"),  
     path("delete_payer/<int:payer_id>/", delete_payer, name="delete_payer"),
-    path('api/unmap_payer/', unmap_payer, name='unmap_payer'),
-    path('unmapped_payers/', unmapped_payers, name='unmapped_payers'),
+    path('unmap_payer/', unmap_payer, name='unmap_payer'),
 ]
